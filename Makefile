@@ -1,6 +1,6 @@
 build:
 	@echo "Will install dependencies and build app"
 test:
-	@echo "Will run test suite"
+	pytest tests/
 run:
 	@echo "Will run the server"
