@@ -1,0 +1,28 @@
+import json
+import urllib
+import logging
+import app.config
+
+class HereGeocoder:
+    def __init__(self):
+        self.service_url = f"https://geocoder.api.here.com/6.2/geocode.json?app_id={app.config.HERE_APP_ID}&app_code={app.config.HERE_APP_CODE}&"
+    def geocode(self, address = "default"):
+        params = {"searchtext": address}
+        query = urllib.parse.urlencode(params)
+        req = urllib.request.Request(self.service_url + query)
+        response = urllib.request.urlopen(req)
+        if response.status == 200:
+            logging.info(f"HERE Geocoder Response {response.status}")
+            json_data = json.loads(response.read().decode('utf-8'))
+            try:
+                latlng = json_data["Response"]["View"][0]["Result"][0]["Location"]["NavigationPosition"][0]
+                return {"status": 20001, "service": "here", "lat": latlng["Latitude"], "lng": latlng["Longitude"]}
+            except KeyError:
+                # Most likely in this case an API error was returned
+                logging.warn(f"HERE Geocoder Response Body Missing Data")
+                return {"status": 50001, "service": "here", "error": "KeyError"}
+        else:
+            # The server returned non-successfully
+            logging.warn(f"HERE Geocoder Response {response.status}")
+            return {"status": 50002, "service": "here"}
+        

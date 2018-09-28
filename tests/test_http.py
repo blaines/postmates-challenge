@@ -1,4 +1,5 @@
 import requests
+import json
 
 class TestGeocode():
     local_server = "http://127.0.0.1:8000"
@@ -8,21 +9,23 @@ class TestGeocode():
     failure = "nil"
     test_postmates = f'{local_server}{local_path}{postmates}'
     test_ycombinator = f'{local_server}{local_path}{ycombinator}'
-    test_failure = f'{local_server}{local_path}{failure}'
+    test_failure = f'{local_server}/{failure}'
 
     def get_response(self, test_url):
         response = requests.get(test_url)
         return response
 
     def test_postmates_response(self):
-        valid = self.get_response(self.test_postmates)
-        assert valid.status_code == 200
-        assert valid.text == '{"lng": 000.00000000, "lat": 000.00000000, "service": "google", "status": "20001"}'
+        test = self.get_response(self.test_postmates)
+        assert test.status_code == 200
+        json_data = json.loads(test.text)
+        assert json_data == {"lat": 37.78473, "lng": -122.40015, "service": "here", "status": 20001}
 
     def test_ycombinator_response(self):
-        valid = self.get_response(self.test_ycombinator)
-        assert valid.status_code == 200
-        assert valid.text == '{"lng": 000.00000000, "lat": 000.00000000, "service": "google", "status": "20001"}'
+        test = self.get_response(self.test_ycombinator)
+        assert test.status_code == 200
+        json_data = json.loads(test.text)
+        assert json_data == {"lat": 37.38677, "lng": -122.06749, "service": "here", "status": 20001}
 
     def test_failure_response(self):
-        assert self.get_response(self.test_failure).status_code != 200
+        assert self.get_response(self.test_failure).status_code == 404
