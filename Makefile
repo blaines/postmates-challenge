@@ -1,6 +1,13 @@
 build:
 	@echo "Will install dependencies and build app"
 test:
-	pytest tests/
+	@echo "Starting HTTP Server"
+	python src/main.py & echo $$! > $@
+	@echo "Running Tests"
+	-pytest tests/
+	kill `cat $@` && rm $@
 run:
-	@echo "Will run the server"
+	@echo "Starting HTTP Server"
+	python src/main.py
+
+.PHONY: test run

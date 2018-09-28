@@ -11,7 +11,7 @@ class TestGeocode():
     test_failure = f'{local_server}{local_path}{failure}'
 
     def get_response(self, test_url):
-        response = requests.get(test_url, proxies={'https':'https://127.0.0.1:8888', 'http':'http://127.0.0.1:8888'})
+        response = requests.get(test_url)
         return response
 
     def test_postmates_response(self):
