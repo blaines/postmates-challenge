@@ -21,6 +21,10 @@ class HereGeocoder:
                 # Most likely in this case an API error was returned
                 logging.warn(f"HERE Geocoder Response Body Missing Data")
                 return {"status": 50001, "service": "here", "error": "KeyError"}
+            except IndexError:
+                # Most likely in this case there was no result
+                logging.warn(f"HERE Geocoder Response Body Missing Data")
+                return {"status": 50002, "service": "here", "error": "IndexError"}
         else:
             # The server returned non-successfully
             logging.warn(f"HERE Geocoder Response {response.status}")
