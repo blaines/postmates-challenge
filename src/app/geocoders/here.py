@@ -10,7 +10,11 @@ class HereGeocoder:
         params = {"searchtext": address}
         query = urllib.parse.urlencode(params)
         req = urllib.request.Request(self.service_url + query)
-        response = urllib.request.urlopen(req)
+        try:
+            response = urllib.request.urlopen(req)
+        except urllib.error.HTTPError:
+            # Probably unauthorized
+            return {"status": 50004, "service": "here"}
         if response.status == 200:
             logging.info(f"HERE Geocoder Response {response.status}")
             json_data = json.loads(response.read().decode('utf-8'))
@@ -28,5 +32,5 @@ class HereGeocoder:
         else:
             # The server returned non-successfully
             logging.warn(f"HERE Geocoder Response {response.status}")
-            return {"status": 50002, "service": "here"}
+            return {"status": 50003, "service": "here"}
         

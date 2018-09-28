@@ -27,5 +27,5 @@ class OSMGeocoder:
         else:
             # The server returned non-successfully
             logging.warn(f"OSM Geocoder Response {response.status}")
-            return {"status": 50012, "service": "osm"}
+            return {"status": 50013, "service": "osm"}
         
